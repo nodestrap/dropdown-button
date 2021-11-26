@@ -65,59 +65,48 @@ export function DropdownButton(props) {
     // const buttonRef = useRef<HTMLButtonElement|null>(null);
     const [buttonRef, setButtonRef] = useState(null);
     // jsx:
-    return (<>
-            <ButtonIcon 
-    // other props:
-    {...restProps} 
-    // essentials:
-    elmRef={(elm) => {
-            setRef(elmRef, elm);
-            setButtonRef(elm);
-        }} 
-    // semantics:
-    aria-expanded={props['aria-expanded'] ?? isActive} 
-    // accessibilities:
-    {...{
-        label,
-    }} 
-    // layouts:
-    orientation={buttonOrientation} 
-    // appearances:
-    {...{
-        icon,
-        iconPosition,
-    }} 
-    // children:
-    children={buttonChildren} 
-    // events:
-    onClick={(e) => {
-            props.onClick?.(e);
-            if (!e.defaultPrevented) {
-                handleToggleActive();
-                e.preventDefault();
-            } // if
-        }}/>
-            <Dropdown 
-    // other props:
-    {...restDropdownProps} 
-    // semantics:
-    tag={dropdownTag} role={dropdownRole} semanticTag={dropdownSemanticTag} semanticRole={dropdownSemanticRole} 
-    // popups:
-    targetRef={props.targetRef ?? buttonRef} 
-    // accessibilities:
-    active={isActive} onActiveChange={(newActive, closeType) => {
-            if (onActiveChange) { // controllable
-                onActiveChange(newActive, closeType);
-            }
-            else { // uncontrollable
-                setActive(newActive);
-            } // if
-        }} 
-    // layouts:
-    orientation={orientation}>
-                {children}
-            </Dropdown>
-        </>);
+    return (React.createElement(React.Fragment, null,
+        React.createElement(ButtonIcon
+        // other props:
+        , { ...restProps, 
+            // essentials:
+            elmRef: (elm) => {
+                setRef(elmRef, elm);
+                setButtonRef(elm);
+            }, "aria-expanded": props['aria-expanded'] ?? isActive, ...{
+                label,
+            }, 
+            // layouts:
+            orientation: buttonOrientation, ...{
+                icon,
+                iconPosition,
+            }, 
+            // children:
+            children: buttonChildren, 
+            // events:
+            onClick: (e) => {
+                props.onClick?.(e);
+                if (!e.defaultPrevented) {
+                    handleToggleActive();
+                    e.preventDefault();
+                } // if
+            } }),
+        React.createElement(Dropdown, { ...restDropdownProps, 
+            // semantics:
+            tag: dropdownTag, role: dropdownRole, semanticTag: dropdownSemanticTag, semanticRole: dropdownSemanticRole, 
+            // popups:
+            targetRef: props.targetRef ?? buttonRef, 
+            // accessibilities:
+            active: isActive, onActiveChange: (newActive, closeType) => {
+                if (onActiveChange) { // controllable
+                    onActiveChange(newActive, closeType);
+                }
+                else { // uncontrollable
+                    setActive(newActive);
+                } // if
+            }, 
+            // layouts:
+            orientation: orientation }, children)));
 }
 DropdownButton.prototype = ButtonIcon.prototype; // mark as ButtonIcon compatible
 export { DropdownButton as default };
