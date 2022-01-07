@@ -83,6 +83,10 @@ export function DropdownButton(props) {
             }, 
             // children:
             children: buttonChildren, 
+            // classes:
+            classes: [...(props.classes ?? []),
+                'last-visible-child',
+            ], 
             // events:
             onClick: (e) => {
                 props.onClick?.(e);
