@@ -2,7 +2,7 @@ import { default as React } from 'react';
 import type { Tag, Role, SemanticTag, SemanticRole } from '@nodestrap/element';
 import { TogglerActiveProps } from '@nodestrap/indicator';
 import { ButtonIconProps } from '@nodestrap/button-icon';
-import { PopupPlacement, PopupModifier, PopupPosition, OrientationName, OrientationVariant, DropdownCloseType, DropdownProps } from '@nodestrap/dropdown';
+import { PopupPlacement, PopupMiddleware, PopupStrategy, OrientationName, OrientationVariant, DropdownCloseType, DropdownProps } from '@nodestrap/dropdown';
 export type { DropdownCloseType };
 export interface DropdownButtonProps<TCloseType = DropdownCloseType> extends Omit<ButtonIconProps, 'size'>, TogglerActiveProps<TCloseType>, DropdownProps<HTMLButtonElement, TCloseType> {
     buttonOrientation?: OrientationName;
@@ -19,4 +19,4 @@ export declare namespace DropdownButton {
 }
 export { DropdownButton as default };
 export type { OrientationName, OrientationVariant };
-export type { PopupPlacement, PopupModifier, PopupPosition };
+export type { PopupPlacement, PopupMiddleware, PopupStrategy };
