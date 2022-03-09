@@ -81,8 +81,6 @@ export function DropdownButton(props) {
                 icon,
                 iconPosition,
             }, 
-            // children:
-            children: buttonChildren, 
             // classes:
             classes: [...(props.classes ?? []),
                 'last-visible-child',
@@ -94,7 +92,7 @@ export function DropdownButton(props) {
                     handleToggleActive();
                     e.preventDefault();
                 } // if
-            } }),
+            } }, buttonChildren),
         React.createElement(Dropdown, { ...restDropdownProps, 
             // semantics:
             tag: dropdownTag, role: dropdownRole, semanticTag: dropdownSemanticTag, semanticRole: dropdownSemanticRole, 
