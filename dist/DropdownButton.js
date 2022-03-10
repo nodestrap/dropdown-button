@@ -22,7 +22,7 @@ export function DropdownButton(props) {
     onActiveChange, // delete, already handled by `useTogglerActive`
     label, 
     // layouts:
-    orientation = 'block', buttonOrientation = (orientation === 'inline') ? 'block' : 'inline', 
+    orientation = 'block', buttonOrientation = 'inline', 
     // appearances:
     icon = (() => {
         switch (orientation) {
