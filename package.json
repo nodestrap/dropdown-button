@@ -1,6 +1,6 @@
 {
   "name": "@nodestrap/dropdown-button",
-  "version": "4.0.9",
+  "version": "4.0.10",
   "description": "A button combined with a generic dropdown.",
   "type": "module",
   "main": "dist/DropdownButton.js",
@@ -32,11 +32,11 @@
   "homepage": "https://github.com/nodestrap/dropdown-button#readme",
   "dependencies": {
     "@nodestrap/button-icon": "^4.0.4",
-    "@nodestrap/dropdown": "^4.0.7",
+    "@nodestrap/dropdown": "^4.0.8",
     "@nodestrap/element": "^4.0.7",
     "@nodestrap/indicator": "^4.0.7",
     "@nodestrap/utilities": "^4.0.3",
-    "@types/react": "^17.0.39",
+    "@types/react": "^17.0.40",
     "react": "^17.0.2"
   }
 }

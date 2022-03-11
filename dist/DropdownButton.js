@@ -13,14 +13,15 @@ export function DropdownButton(props) {
     // rest props:
     const { 
     // essentials:
-    elmRef, 
+    buttonRef, 
     // semantics:
-    dropdownTag, dropdownRole, dropdownSemanticTag, dropdownSemanticRole, 
+    'aria-expanded': ariaExpanded = isActive, 
     // accessibilities:
     defaultActive, // delete, already handled by `useTogglerActive`
     active, // delete, already handled by `useTogglerActive`
+    inheritActive, // delete, already handled by `useTogglerActive`
     onActiveChange, // delete, already handled by `useTogglerActive`
-    label, 
+    label, tabIndex, 
     // layouts:
     orientation = 'block', buttonOrientation = 'inline', 
     // appearances:
@@ -34,16 +35,17 @@ export function DropdownButton(props) {
                 return 'dropdown';
         } // switch
     })(), iconPosition = 'end', // from IconProps
+    // popups:
+    targetRef, 
+    // events:
+    onClick, 
+    // components:
+    button = React.createElement(ButtonIcon, null), 
     // children:
-    children, buttonChildren, ...restProps } = props;
+    children, buttonChildren, ...restSharedProps } = props;
     const { 
     // essentials:
     style, // delete
-    // semantics:
-    tag, // delete, replace with: dropdownTag
-    role, // delete, replace with: dropdownRole
-    semanticTag, // delete, replace with: dropdownSemanticTag
-    semanticRole, // delete, replace with: dropdownSemanticRole
     // identifiers:
     id, // delete
     // classes:
@@ -51,7 +53,19 @@ export function DropdownButton(props) {
     classes, // delete
     variantClasses, // delete
     stateClasses, // delete
-    ...restDropdownProps } = restProps;
+    ...restDropdownProps } = restSharedProps;
+    const { 
+    // layouts:
+    size, 
+    // orientation, // renamed buttonOrientation
+    nude, 
+    // colors:
+    theme, gradient, outlined, mild, 
+    // <Indicator> states:
+    enabled, inheritEnabled, readOnly, inheritReadOnly,
+    // active,        // delete, already handled by `useTogglerActive`
+    // inheritActive, // delete, already handled by `useTogglerActive`
+     } = restDropdownProps;
     // handlers:
     const handleToggleActive = () => {
         setActive(!isActive); // toggle active
@@ -62,42 +76,58 @@ export function DropdownButton(props) {
     so if the DOM reference changed, it triggers a new render,
     and then pass the correct (newest) DOM reference to the Dropdown.
     */
-    // const buttonRef = useRef<HTMLButtonElement|null>(null);
-    const [buttonRef, setButtonRef] = useState(null);
+    // const buttonRef2 = useRef<HTMLButtonElement|null>(null);
+    const [buttonRef2, setButtonRef2] = useState(null);
     // jsx:
+    const defaultButtonProps = {
+        // essentials:
+        elmRef: (elm) => {
+            setRef(buttonRef, elm);
+            setButtonRef2(elm);
+        },
+        // semantics:
+        'aria-expanded': ariaExpanded,
+        // accessibilities:
+        label: label,
+        tabIndex: tabIndex,
+        // appearances:
+        icon: icon,
+        iconPosition: iconPosition,
+        // variants:
+        // layouts:
+        size: size,
+        orientation: buttonOrientation,
+        nude: nude,
+        // colors:
+        theme: theme,
+        gradient: gradient,
+        outlined: outlined,
+        mild: mild,
+        // <Indicator> states:
+        enabled: enabled,
+        inheritEnabled: inheritEnabled,
+        readOnly: readOnly,
+        inheritReadOnly: inheritReadOnly,
+        active: isActive,
+        inheritActive: false,
+        // classes:
+        classes: [
+            'last-visible-child',
+        ],
+        // events:
+        onClick: (e) => {
+            onClick?.(e);
+            if (!e.defaultPrevented) {
+                handleToggleActive();
+                e.preventDefault();
+            } // if
+        },
+    };
     return (React.createElement(React.Fragment, null,
-        React.createElement(ButtonIcon
-        // other props:
-        , { ...restProps, 
-            // essentials:
-            elmRef: (elm) => {
-                setRef(elmRef, elm);
-                setButtonRef(elm);
-            }, "aria-expanded": props['aria-expanded'] ?? isActive, ...{
-                label,
-            }, 
-            // layouts:
-            orientation: buttonOrientation, ...{
-                icon,
-                iconPosition,
-            }, 
-            // classes:
-            classes: [...(props.classes ?? []),
-                'last-visible-child',
-            ], 
-            // events:
-            onClick: (e) => {
-                props.onClick?.(e);
-                if (!e.defaultPrevented) {
-                    handleToggleActive();
-                    e.preventDefault();
-                } // if
-            } }, buttonChildren),
+        React.cloneElement(React.cloneElement(button, defaultButtonProps, buttonChildren), button.props),
         React.createElement(Dropdown, { ...restDropdownProps, 
-            // semantics:
-            tag: dropdownTag, role: dropdownRole, semanticTag: dropdownSemanticTag, semanticRole: dropdownSemanticRole, 
             // popups:
-            targetRef: props.targetRef ?? buttonRef, 
+            targetRef: targetRef ?? buttonRef2, 
             // accessibilities:
             active: isActive, onActiveChange: (newActive, closeType) => {
                 if (onActiveChange) { // controllable

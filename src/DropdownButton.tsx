@@ -12,11 +12,8 @@ import {
 
 // nodestrap components:
 import type {
-    // general types:
-    Tag,
-    Role,
-    SemanticTag,
-    SemanticRole,
+    // react components:
+    ElementProps,
 }                           from '@nodestrap/element'
 import {
     // hooks:
@@ -57,33 +54,30 @@ export type { DropdownCloseType }
 
 
 
-export interface DropdownButtonProps<TCloseType = DropdownCloseType>
+export type BasicButtonIconProps = Pick<ButtonIconProps, 'icon'|'iconPosition'|'onClick'|'label'|'tabIndex'>
+export interface DropdownButtonProps<TElement extends HTMLElement = HTMLElement, TCloseType = DropdownCloseType>
     extends
-        Omit<ButtonIconProps, 'size'>,
+        BasicButtonIconProps,
         TogglerActiveProps<TCloseType>,
         
-        DropdownProps<HTMLButtonElement, TCloseType>
+        Omit<DropdownProps<TElement, TCloseType>, 'onClick'>
 {
+    // essentials:
+    buttonRef?         : React.Ref<HTMLButtonElement> // setter ref
+    
+    
     // layouts:
     buttonOrientation? : OrientationName
     
     
-    // accessibilities:
-    label?          : string
+    // components:
+    button?            : React.ReactComponentElement<any, ElementProps>
     
     
     // children:
-    buttonChildren? : React.ReactNode
-    
-    
-    
-    // semantics:
-    dropdownTag?          : Tag
-    dropdownRole?         : Role
-    dropdownSemanticTag?  : SemanticTag
-    dropdownSemanticRole? : SemanticRole
+    buttonChildren?    : React.ReactNode
 }
-export function DropdownButton<TCloseType = DropdownCloseType>(props: DropdownButtonProps<TCloseType>) {
+export function DropdownButton<TElement extends HTMLElement = HTMLElement, TCloseType = DropdownCloseType>(props: DropdownButtonProps<TElement, TCloseType>) {
     // states:
     const [isActive, setActive] = useTogglerActive(props);
     
@@ -92,22 +86,21 @@ export function DropdownButton<TCloseType = DropdownCloseType>(props: DropdownBu
     // rest props:
     const {
         // essentials:
-        elmRef,
+        buttonRef,
         
         
         // semantics:
-        dropdownTag,
-        dropdownRole,
-        dropdownSemanticTag,
-        dropdownSemanticRole,
+        'aria-expanded' : ariaExpanded = isActive,
         
         
         // accessibilities:
         defaultActive,  // delete, already handled by `useTogglerActive`
         active,         // delete, already handled by `useTogglerActive`
+        inheritActive,  // delete, already handled by `useTogglerActive`
         onActiveChange, // delete, already handled by `useTogglerActive`
         
         label,
+        tabIndex,
         
         
         // layouts:
@@ -130,20 +123,25 @@ export function DropdownButton<TCloseType = DropdownCloseType>(props: DropdownBu
         iconPosition = 'end',   // from IconProps
         
         
+        // popups:
+        targetRef,
+        
+        
+        // events:
+        onClick,
+        
+        
+        // components:
+        button = <ButtonIcon />,
+        
+        
         // children:
         children,
         buttonChildren,
-    ...restProps} = props;
+    ...restSharedProps} = props;
     const {
         // essentials:
         style,          // delete
-        
-        
-        // semantics:
-        tag,            // delete, replace with: dropdownTag
-        role,           // delete, replace with: dropdownRole
-        semanticTag,    // delete, replace with: dropdownSemanticTag
-        semanticRole,   // delete, replace with: dropdownSemanticRole
         
         
         // identifiers:
@@ -155,7 +153,29 @@ export function DropdownButton<TCloseType = DropdownCloseType>(props: DropdownBu
         classes,        // delete
         variantClasses, // delete
         stateClasses,   // delete
-    ...restDropdownProps} = restProps;
+    ...restDropdownProps} = restSharedProps;
+    const {
+        // layouts:
+        size,
+        // orientation, // renamed buttonOrientation
+        nude,
+        
+        
+        // colors:
+        theme,
+        gradient,
+        outlined,
+        mild,
+        
+        
+        // <Indicator> states:
+        enabled,
+        inheritEnabled,
+        readOnly,
+        inheritReadOnly,
+        // active,        // delete, already handled by `useTogglerActive`
+        // inheritActive, // delete, already handled by `useTogglerActive`
+    } = restDropdownProps;
     
     
     
@@ -172,88 +192,91 @@ export function DropdownButton<TCloseType = DropdownCloseType>(props: DropdownBu
     so if the DOM reference changed, it triggers a new render,
     and then pass the correct (newest) DOM reference to the Dropdown.
     */
-    // const buttonRef = useRef<HTMLButtonElement|null>(null);
-    const [buttonRef, setButtonRef] = useState<HTMLButtonElement|null>(null);
+    // const buttonRef2 = useRef<HTMLButtonElement|null>(null);
+    const [buttonRef2, setButtonRef2] = useState<HTMLButtonElement|null>(null);
     
     
     
     // jsx:
+    const defaultButtonProps : ButtonIconProps = {
+        // essentials:
+        elmRef          : (elm) => {
+            setRef(buttonRef, elm);
+            setButtonRef2(elm);
+        },
+        
+        
+        // semantics:
+        'aria-expanded' : ariaExpanded,
+        
+        
+        // accessibilities:
+        label           : label,
+        tabIndex        : tabIndex,
+        
+        
+        // appearances:
+        icon            : icon,
+        iconPosition    : iconPosition,
+        
+        
+        // variants:
+        // layouts:
+        size            : size,
+        orientation     : buttonOrientation,
+        nude            : nude,
+        // colors:
+        theme           : theme,
+        gradient        : gradient,
+        outlined        : outlined,
+        mild            : mild,
+        
+        
+        // <Indicator> states:
+        enabled         : enabled,
+        inheritEnabled  : inheritEnabled,
+        readOnly        : readOnly,
+        inheritReadOnly : inheritReadOnly,
+        active          : isActive,
+        inheritActive   : false,
+        
+        
+        // classes:
+        classes         : [
+            'last-visible-child',
+        ],
+        
+        
+        // events:
+        onClick         : (e) => {
+            onClick?.(e);
+            
+            
+            
+            if (!e.defaultPrevented) {
+                handleToggleActive();
+                e.preventDefault();
+            } // if
+        },
+    };
     return (
         <>
-            <ButtonIcon
-                // other props:
-                {...restProps}
-                
-                
-                // essentials:
-                elmRef={(elm) => {
-                    setRef(elmRef, elm);
-                    setButtonRef(elm);
-                }}
-                
-                
-                // semantics:
-                aria-expanded={props['aria-expanded'] ?? isActive}
-                
-                
-                // accessibilities:
-                {...{
-                    label,
-                }}
-                
-                
-                // layouts:
-                orientation={buttonOrientation}
-                
-                
-                // appearances:
-                {...{
-                    icon,
-                    iconPosition,
-                }}
-                
-                
-                // classes:
-                classes={[...(props.classes ?? []),
-                    'last-visible-child',
-                ]}
-                
-                
-                // events:
-                onClick={(e) => {
-                    props.onClick?.(e);
-                    
-                    
-                    
-                    if (!e.defaultPrevented) {
-                        handleToggleActive();
-                        e.preventDefault();
-                    } // if
-                }}
-            >
-                {buttonChildren}
-            </ButtonIcon>
+            { React.cloneElement(React.cloneElement(button, defaultButtonProps, buttonChildren), button.props) }
+            
             <Dropdown<HTMLElement, TCloseType>
                 // other props:
                 {...restDropdownProps}
                 
                 
-                // semantics:
-                tag ={dropdownTag }
-                role={dropdownRole}
-                semanticTag ={dropdownSemanticTag }
-                semanticRole={dropdownSemanticRole}
-                
-                
                 // popups:
-                targetRef={props.targetRef ?? buttonRef}
+                targetRef={targetRef ?? buttonRef2}
                 
                 
                 // accessibilities:
                 active={isActive}
                 onActiveChange={(newActive, closeType) => {
                     if (onActiveChange) { // controllable
-                        onActiveChange(newActive, closeType as unknown as TCloseType);
+                        onActiveChange(newActive, closeType);
                     }
                     else { // uncontrollable
                         setActive(newActive);
