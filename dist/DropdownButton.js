@@ -58,7 +58,7 @@ export function DropdownButton(props) {
     // layouts:
     size, 
     // orientation, // renamed buttonOrientation
-    nude, 
+    // nude,
     // colors:
     theme, gradient, outlined, mild, 
     // <Indicator> states:
@@ -97,7 +97,7 @@ export function DropdownButton(props) {
         // layouts:
         size: size,
         orientation: buttonOrientation,
-        nude: nude,
+        // nude            : nude,
         // colors:
         theme: theme,
         gradient: gradient,

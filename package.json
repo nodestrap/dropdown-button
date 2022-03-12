@@ -1,6 +1,6 @@
 {
   "name": "@nodestrap/dropdown-button",
-  "version": "4.0.10",
+  "version": "4.0.11",
   "description": "A button combined with a generic dropdown.",
   "type": "module",
   "main": "dist/DropdownButton.js",
