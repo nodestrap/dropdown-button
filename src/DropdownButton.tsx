@@ -141,18 +141,18 @@ export function DropdownButton<TElement extends HTMLElement = HTMLElement, TClos
     ...restSharedProps} = props;
     const {
         // essentials:
-        style,          // delete
+        style,          // moved to button
         
         
         // identifiers:
-        id,             // delete
+        id,             // moved to button
         
         
         // classes:
-        mainClass,      // delete
-        classes,        // delete
-        variantClasses, // delete
-        stateClasses,   // delete
+        mainClass,      // moved to button
+        classes,        // moved to button
+        variantClasses, // moved to button
+        stateClasses,   // moved to button
     ...restDropdownProps} = restSharedProps;
     const {
         // layouts:
@@ -200,6 +200,24 @@ export function DropdownButton<TElement extends HTMLElement = HTMLElement, TClos
     // jsx:
     const defaultButtonProps : ButtonIconProps = {
         // essentials:
+        style,          // moved to button
+        
+        
+        // identifiers:
+        id,             // moved to button
+        
+        
+        // classes:
+        mainClass,      // moved to button
+        classes: [      // moved to button
+            ...(classes ?? []),
+            'last-visible-child',
+        ],
+        variantClasses, // moved to button
+        stateClasses,   // moved to button
+        
+        
+        // essentials:
         elmRef          : (elm) => {
             setRef(buttonRef, elm);
             setButtonRef2(elm);
@@ -241,12 +259,6 @@ export function DropdownButton<TElement extends HTMLElement = HTMLElement, TClos
         inheritActive   : false,
         
         
-        // classes:
-        classes         : [
-            'last-visible-child',
-        ],
-        
-        
         // events:
         onClick         : (e) => {
             onClick?.(e);
@@ -263,7 +275,7 @@ export function DropdownButton<TElement extends HTMLElement = HTMLElement, TClos
         <>
             { React.cloneElement(React.cloneElement(button, defaultButtonProps, buttonChildren), button.props) }
             
-            <Dropdown<HTMLElement, TCloseType>
+            <Dropdown<TElement, TCloseType>
                 // other props:
                 {...restDropdownProps}
                 

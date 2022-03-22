@@ -34,9 +34,9 @@
     "@nodestrap/button-icon": "^4.0.4",
     "@nodestrap/dropdown": "^4.0.8",
     "@nodestrap/element": "^4.0.7",
-    "@nodestrap/indicator": "^4.0.7",
+    "@nodestrap/indicator": "^4.0.8",
     "@nodestrap/utilities": "^4.0.3",
-    "@types/react": "^17.0.40",
+    "@types/react": "^17.0.41",
     "react": "^17.0.2"
   }
 }

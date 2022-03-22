@@ -45,14 +45,14 @@ export function DropdownButton(props) {
     children, buttonChildren, ...restSharedProps } = props;
     const { 
     // essentials:
-    style, // delete
+    style, // moved to button
     // identifiers:
-    id, // delete
+    id, // moved to button
     // classes:
-    mainClass, // delete
-    classes, // delete
-    variantClasses, // delete
-    stateClasses, // delete
+    mainClass, // moved to button
+    classes, // moved to button
+    variantClasses, // moved to button
+    stateClasses, // moved to button
     ...restDropdownProps } = restSharedProps;
     const { 
     // layouts:
@@ -80,6 +80,18 @@ export function DropdownButton(props) {
     const [buttonRef2, setButtonRef2] = useState(null);
     // jsx:
     const defaultButtonProps = {
+        // essentials:
+        style,
+        // identifiers:
+        id,
+        // classes:
+        mainClass,
+        classes: [
+            ...(classes ?? []),
+            'last-visible-child',
+        ],
+        variantClasses,
+        stateClasses,
         // essentials:
         elmRef: (elm) => {
             setRef(buttonRef, elm);
@@ -110,10 +122,6 @@ export function DropdownButton(props) {
         inheritReadOnly: inheritReadOnly,
         active: isActive,
         inheritActive: false,
-        // classes:
-        classes: [
-            'last-visible-child',
-        ],
         // events:
         onClick: (e) => {
             onClick?.(e);
